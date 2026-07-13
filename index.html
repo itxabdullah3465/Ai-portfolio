@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- ==========================================
+       1. WEBSITE TITLE & METADATA
+       ========================================== -->
+  <title>Muhammad Abdullah - Portfolio OS</title>
+  
+  <!-- FontAwesome for high-quality vector icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       2. SYSTEM CORE CURSORS
+       ========================================== -->
+  <div class="custom-cursor" id="custom-cursor"></div>
+  <div class="custom-cursor-follower" id="custom-cursor-follower"></div>
+
+  <!-- ==========================================
+       3. BOOT SCREEN LOGO & PROGRESS LOADER
+       ========================================== -->
+  <div class="boot-screen" id="boot-screen">
+    <div class="boot-logo">PORTFOLIO OS v2.0</div>
+    <div class="boot-terminal" id="boot-terminal"></div>
+    <div class="boot-progress-container">
+      <div class="boot-progress-bar" id="boot-progress-bar"></div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       4. DESKTOP INTERFACE CONTAINER
+       ========================================== -->
+  <div class="desktop" id="desktop">
+    <!-- Dynamic wallpaper canvas (swappable under Settings) -->
+    <canvas id="particles-canvas"></canvas>
+    
+    <!-- Cursor interactive glow background -->
+    <div class="mouse-glow" id="mouse-glow"></div>
+ 
+    <!-- Desktop Grid Icons (Dynamically drawn by main.js) -->
+    <div class="desktop-icons-grid" id="desktop-icons-grid">
+      <!-- 
+        Tip: To add desktop shortcuts manually, you can edit APPS array inside 'src/main.js'.
+        Each entry automatically renders a grid icon here.
+      -->
+    </div>
+
+    <!-- Active Windows Snap Guides -->
+    <div class="snap-indicator" id="snap-indicator"></div>
+
+    <!-- ==========================================
+         5. DESKTOP WIDGETS
+         ========================================== -->
+     <!-- Widget: Pinned Profile Card Widget -->
+     <div class="widget-profile-card" id="widget-profile-card">
+       <div class="profile-card-header">
+         <div class="profile-card-avatar-wrapper">
+           <img src="/profile.jpg" alt="Muhammad Abdullah" class="profile-card-avatar">
+           <div class="profile-avatar-pulse"></div>
+         </div>
+         <div class="profile-card-names">
+           <h2 class="profile-card-name">Muhammad Abdullah</h2>
+           <p class="profile-card-title">AI Developer & Front-End Engineer</p>
+         </div>
+       </div>
+       <div class="profile-card-bio">
+         <i class="fa-solid fa-graduation-cap" style="color: var(--primary-color); margin-right: 5px;"></i>
+         <span>Bachelor’s in Artificial Intelligence</span>
+       </div>
+       <div class="profile-card-bio-tagline">
+         AI Developer | React & Tailwind specialist | Database Management | UI/UX Designer
+       </div>
+       <div class="profile-card-skills-title">Core Skills</div>
+       <div class="profile-card-skills-grid">
+         <div class="profile-skill-badge"><span class="skill-icon">🧠</span> Python AI</div>
+         <div class="profile-skill-badge"><span class="skill-icon">🤖</span> ML & LLMs</div>
+         <div class="profile-skill-badge"><span class="skill-icon">⚛️</span> React.js</div>
+         <div class="profile-skill-badge"><span class="skill-icon">🌊</span> Tailwind CSS</div>
+         <div class="profile-skill-badge"><span class="skill-icon">🗄️</span> Databases</div>
+         <div class="profile-skill-badge"><span class="skill-icon">📐</span> UI/UX</div>
+       </div>
+     </div>
+
+    <!-- Widget: Digital Clock -->
+    <div class="widget-clock" id="widget-clock" title="Click to view calendar">
+      <div class="time" id="clock-time">00:00:00</div>
+      <div class="date" id="clock-date">Wednesday, July 1, 2026</div>
+    </div>
+
+    <!-- Widget: Weather Information (Updates via Geolocation) -->
+    <div class="widget-weather-overlay" id="widget-weather-overlay">
+      <div class="weather-header">
+        <span class="weather-city" id="weather-city">Loading...</span>
+        <span class="weather-update" id="weather-update"><i class="fa-solid fa-arrows-rotate"></i></span>
+      </div>
+      <div class="weather-body">
+        <div class="weather-temp-group">
+          <div class="weather-temp" id="weather-temp">--°C</div>
+          <div class="weather-desc" id="weather-desc">Connecting...</div>
+        </div>
+        <div class="weather-icon-lg" id="weather-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+      </div>
+      <div class="weather-details">
+        <span>Humidity: <span id="weather-humidity">--%</span></span>
+        <span>Wind: <span id="weather-wind">-- km/h</span></span>
+      </div>
+    </div>
+
+    <!-- Active Apps spawn point inside OS -->
+    <div class="windows-container" id="windows-container"></div>
+  </div>
+
+  <!-- ==========================================
+       6. GLOBAL SEARCH ENGINE (Ctrl + F or click Search)
+       ========================================== -->
+  <div class="global-search-overlay" id="global-search-overlay">
+    <div class="search-input-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="global-search-input" placeholder="Search projects, skills, credentials, contact..." autocomplete="off">
+    </div>
+    <div class="search-results-list" id="search-results-list">
+      <!-- Matches rendered here by SearchManager.js -->
+    </div>
+  </div>
+
+  <!-- ==========================================
+       7. WINDOWS 11 STYLE START MENU
+       ========================================== -->
+  <div class="start-menu" id="start-menu">
+    <!-- Search shortcut bar -->
+    <div class="start-search-block">
+      <div class="start-search-input-wrapper" id="start-search-trigger">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Type here to search..." readonly>
+      </div>
+    </div>
+    
+    <!-- Apps Grid & Actions -->
+    <div class="start-content-grid">
+      <div class="start-pinned-section">
+        <div class="start-section-heading">Pinned Applications</div>
+        <div class="start-pinned-grid" id="start-pinned-grid">
+          <!-- Populated dynamically via 'APPS' data array -->
+        </div>
+      </div>
+      
+      <div class="start-recent-section">
+        <div class="start-section-heading">Quick Actions</div>
+        <div class="start-recent-list" id="start-recent-list">
+          <!-- Quick actions populated by main.js -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- User profile avatar & power buttons -->
+    <div class="start-footer-bar">
+      <div class="start-user-profile">
+        <img class="start-user-avatar" id="start-user-avatar" src="" alt="Avatar">
+        <span class="start-user-name" id="start-user-name">Muhammad Abdullah</span>
+      </div>
+      <button class="start-power-btn" id="start-power-btn" title="Shut Down / Restart OS">
+        <i class="fa-solid fa-power-off"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       8. SIDEBAR NOTIFICATION CENTER
+       ========================================== -->
+  <div class="notifications-panel" id="notifications-panel">
+    <div class="notifications-header">
+      <h3>Notification Center</h3>
+      <button class="btn-clear-notifications" id="btn-clear-notifications">Clear All</button>
+    </div>
+    <div class="notifications-list" id="notifications-list">
+      <!-- Alerts listed here -->
+    </div>
+  </div>
+
+  <!-- Floating Toast alerts bottom right of screen -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ==========================================
+       9. SYSTEM TRAY INTERACTIVE CALENDAR
+       ========================================== -->
+  <div class="system-calendar-panel" id="system-calendar-panel">
+    <div class="calendar-header">
+      <button id="cal-prev-month"><i class="fa-solid fa-chevron-left"></i></button>
+      <span id="cal-month-year">July 2026</span>
+      <button id="cal-next-month"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+    <div class="calendar-weekdays">
+      <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+    </div>
+    <div class="calendar-days" id="calendar-days-grid"></div>
+    <div class="calendar-notes-section" id="calendar-notes-section">
+      <h4 id="calendar-selected-date-label" style="font-size:0.75rem; color:#fff; margin-bottom:4px;">No date selected</h4>
+      <div style="display:flex; gap:5px;">
+        <input type="text" id="calendar-note-input" placeholder="Type a reminder & press Enter..." style="flex:1; background:rgba(0,0,0,0.2); border:1px solid var(--panel-border); border-radius:4px; padding:4px 8px; font-size:0.75rem; color:#fff;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       10. CORE TASKBAR PANEL
+       ========================================== -->
+  <div class="taskbar">
+    <div class="taskbar-start-group">
+      <!-- Start Menu Button -->
+      <button class="btn-start" id="btn-start" title="Start Menu (Win Key)">
+        <i class="fa-solid fa-cubes"></i>
+      </button>
+      
+      <!-- Pinned Taskbar Apps -->
+      <div class="taskbar-pinned">
+        <div class="taskbar-pinned-icon" data-app="terminal" title="Developer Terminal (Ctrl+`)">
+          <i class="fa-solid fa-terminal" style="color: #38bdf8;"></i>
+        </div>
+        <div class="taskbar-pinned-icon" data-app="github" title="GitHub Integrations (Ctrl+G)">
+          <i class="fa-brands fa-github" style="color: #f8fafc;"></i>
+        </div>
+        <div class="taskbar-pinned-icon" data-app="linkedin" title="LinkedIn Card (Ctrl+L)">
+          <i class="fa-brands fa-linkedin" style="color: #0a66c2;"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Container for active window minimized tiles (managed via WindowManager.js) -->
+    <div class="taskbar-running-apps" id="taskbar-running-apps"></div>
+
+    <!-- Right Side System Tray -->
+    <div class="taskbar-system-tray">
+      <!-- Wi-Fi connectivity indicator -->
+      <i class="fa-solid fa-wifi tray-icon" id="tray-wifi" title="Wi-Fi: Connected"></i>
+      
+      <!-- Laptop Battery Status level sync -->
+      <div class="tray-battery" id="tray-battery-parent" title="Battery: Level Unknown">
+        <i class="fa-solid fa-battery-full tray-icon" id="tray-battery-icon"></i>
+        <span id="tray-battery-level" style="font-size:0.7rem; font-family:var(--font-os); color:var(--text-secondary);">100%</span>
+      </div>
+      
+      <!-- General Tray controls -->
+      <i class="fa-solid fa-volume-high tray-icon" id="tray-volume" title="Volume Controls"></i>
+      <i class="fa-solid fa-bell tray-icon" id="tray-bell" title="Notifications Panel"></i>
+      
+      <!-- Tray Clock / Date (Toggles the Calendar Overlay) -->
+      <div class="tray-clock" id="tray-clock" title="Open Calendar">
+        <span id="tray-time">12:00 PM</span>
+        <span id="tray-date">07/01/2026</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript Entry Module -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
